@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server' // Import NextResponse from Next.js for
 import OpenAI from 'openai' // Import OpenAI library for interacting with the OpenAI API
 
 // System prompt for the AI, providing guidelines on how to respond to users
-// const systemPrompt = 
+const systemPrompt = "You are an AI character in a medieval fantasy world. Respond to users as if you are a wise wizard with magical knowledge. Be creative and immersive in your storytelling."
 
 // POST function to handle incoming requests
 export async function POST(req) {
@@ -14,7 +14,7 @@ export async function POST(req) {
     messages: [{role: 'system', content: systemPrompt}, ...data], // Include the system prompt and user messages
     model: 'gpt-4o', // Specify the model to use
     stream: true, // Enable streaming responses
-  })
+  })       
 
   // Create a ReadableStream to handle the streaming response
   const stream = new ReadableStream({
