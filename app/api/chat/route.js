@@ -1,3 +1,9 @@
+
+
+// route.js page implements: a POST endpoint for nextjs API route that interacts with the openAI API to generate AI-powered response 
+// according to the systemPrompt
+
+
 import {NextResponse} from 'next/server' // Import NextResponse from Next.js for handling responses
 import OpenAI from 'openai' // Import OpenAI library for interacting with the OpenAI API
 
