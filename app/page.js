@@ -1,9 +1,15 @@
+
+
+// page.js is the React component that serves as a chat interface for the assistant AI (using MUI components)
+
+
+
 'use client'
 
 import { Box, Button, Stack, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useState } from 'react' // imported from React to manage component state
 
-export default function Home() {
+export default function Home() { // 
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
