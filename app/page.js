@@ -3,7 +3,6 @@
 // page.js is the React component that serves as a chat interface for the assistant AI (using MUI components)
 
 
-
 'use client'
 
 import { Box, Button, Stack, TextField } from '@mui/material'
@@ -19,7 +18,7 @@ export default function Home() { //
   const [message, setMessage] = useState('')
 
   const sendMessage = async () => {
-    if (!message.trim()) return;  // Don't send empty messages
+    if (!message.trim()) return;  // Don't send empty messages (Check if input message is empty)
   
     setMessage('')
     setMessages((messages) => [
@@ -29,7 +28,7 @@ export default function Home() { //
     ])
   
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/chat', { // Send user's message to /api/chat/ endpoint using POST request
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,6 +64,10 @@ export default function Home() { //
       ])
     }
   }
+
+
+  // Box is the main container, Stack is the chat container in big
+  // Under the Stack chat, there is Stack (message list), and Box (message box), and another Stack (input message)
 
   return (
     <Box
