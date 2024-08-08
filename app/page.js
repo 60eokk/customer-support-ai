@@ -8,7 +8,7 @@
 import { Box, Button, Stack, TextField } from '@mui/material'
 import { useState } from 'react' // imported from React to manage component state
 
-export default function Home() { // 
+export default function Home() { 
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -17,46 +17,51 @@ export default function Home() { //
   ])
   const [message, setMessage] = useState('')
 
+  // sendMessage is a asynchoronous function that
+  // 1. validates user input (make sure its not empty)
+  // 2. send usser message to server endpoint
+  // 3. processess the server's response, which is streamed back in chunks
+  // 4. updates chat interface with response or an error message
   const sendMessage = async () => {
-    if (!message.trim()) return;  // Don't send empty messages (Check if input message is empty)
+    if (!message.trim()) return;  // Don't send empty messages (Check if input message is empty) trim() removes any leading whitespace from input
   
-    setMessage('')
+    setMessage('') // clears input after message is sent
     setMessages((messages) => [
-      ...messages,
+      ...messages, // copies existing message
       { role: 'user', content: message },
-      { role: 'assistant', content: '' },
+      { role: 'assistant', content: '' }, // empty message for assistant, which will b filled with their response
     ])
   
     try {
-      const response = await fetch('/api/chat', { // Send user's message to /api/chat/ endpoint using POST request
+      const response = await fetch('/api/chat', { // Send user's message to /api/chat/ endpoint using HTTP POST request
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+        headers: { 
+          'Content-Type': 'application/json', // sets content type to application/json to indicate JSON date
         },
-        body: JSON.stringify([...messages, { role: 'user', content: message }]),
+        body: JSON.stringify([...messages, { role: 'user', content: message }]), // convert message array to JSON string
       })
   
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
   
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
+      const reader = response.body.getReader() // setup to read
+      const decoder = new TextDecoder() // setup to decode
   
       while (true) {
-        const { done, value } = await reader.read()
+        const { done, value } = await reader.read() // reads chunks of data from response stream
         if (done) break
-        const text = decoder.decode(value, { stream: true })
+        const text = decoder.decode(value, { stream: true }) // decodes chunk into a string
         setMessages((messages) => {
-          let lastMessage = messages[messages.length - 1]
+          let lastMessage = messages[messages.length - 1] // takes last message (assistant)
           let otherMessages = messages.slice(0, messages.length - 1)
           return [
             ...otherMessages,
-            { ...lastMessage, content: lastMessage.content + text },
+            { ...lastMessage, content: lastMessage.content + text }, // appends new text to existing content
           ]
         })
       }
-    } catch (error) {
+    } catch (error) { // only catching errors that occur during fetch, or streaming process
       console.error('Error:', error)
       setMessages((messages) => [
         ...messages,
