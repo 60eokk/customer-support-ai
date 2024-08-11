@@ -44,5 +44,3 @@ export async function POST(req) {
 
   return new NextResponse(stream) // Return the stream as the response
 } 
-
-// problem with npm missing script dev
