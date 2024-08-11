@@ -6,7 +6,7 @@
 'use client'
 
 import { Box, Button, Stack, TextField } from '@mui/material'
-import { useState } from 'react' // imported from React to manage component state
+import { useState, useEffect, useRef } from 'react' // imported from React to manage component state
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -80,6 +80,16 @@ export default function Home() {
     }
   }
 
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
 
   // Box is the main container, Stack is the chat container in big
   // Under the Stack chat, there is Stack (message list), and Box (message box), and another Stack (input message)
@@ -130,6 +140,7 @@ export default function Home() {
               </Box>
             </Box>
           ))}
+          <div ref={messagesEndRef} />
         </Stack>
         <Stack direction={'row'} spacing={2}>
           <TextField
