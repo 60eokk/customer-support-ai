@@ -8,7 +8,7 @@
 import { Box, Button, Stack, TextField } from '@mui/material'
 import { useState } from 'react' // imported from React to manage component state
 
-export default function Home() { 
+export default function Home() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -16,6 +16,7 @@ export default function Home() {
     },
   ])
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   // sendMessage is a asynchoronous function that
   // 1. validates user input (make sure its not empty)
@@ -23,7 +24,8 @@ export default function Home() {
   // 3. processess the server's response, which is streamed back in chunks
   // 4. updates chat interface with response or an error message
   const sendMessage = async () => {
-    if (!message.trim()) return;  // Don't send empty messages (Check if input message is empty) trim() removes any leading whitespace from input
+    if (!message.trim() || isLoading) return;  // Don't send empty messages (Check if input message is empty) trim() removes any leading whitespace from input
+    setIsLoading(true)
   
     setMessage('') // clears input after message is sent
     setMessages((messages) => [
@@ -67,6 +69,14 @@ export default function Home() {
         ...messages,
         { role: 'assistant', content: "I'm sorry, but I encountered an error. Please try again later." },
       ])
+    }
+    setIsLoading(false)
+  }
+
+  const handleKeyPress = (event) => {
+    if (event.key == 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      sendMessage()
     }
   }
 
@@ -127,9 +137,15 @@ export default function Home() {
             fullWidth
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            disabled={isLoading}
           />
-          <Button variant="contained" onClick={sendMessage}>
-            Send
+          <Button 
+            variant="contained" 
+            onClick={sendMessage}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Sending...' : 'Send'}
           </Button>
         </Stack>
       </Stack>
